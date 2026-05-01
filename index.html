@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ANCHOR</title>
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+/* ── TOKENS ─────────────────────────────────────── */
+:root {
+  --bg:    #131312;
+  --s1:    #1b1a18;
+  --s2:    #222120;
+  --s3:    #2c2b29;
+  --bdr:   rgba(255,255,255,0.07);
+  --div:   rgba(255,255,255,0.04);
+  --tx:    #d4d2cf;
+  --mu:    #7a7876;
+  --fa:    #474542;
+  --pr:    #4fa8b0;
+  --pr-bg: rgba(79,168,176,0.12);
+  --gn:    #6daa45;
+  --gn-bg: rgba(109,170,69,0.13);
+  --gd:    #e8af34;
+  --gd-bg: rgba(232,175,52,0.13);
+  --rd:    #df7070;
+  --rd-bg: rgba(223,112,112,0.12);
+  --r: 14px; --rm: 10px; --rs: 8px;
+  --nav-h: 70px;
+}
+[data-theme="light"] {
+  --bg:    #f3f2ef;
+  --s1:    #faf9f7;
+  --s2:    #ffffff;
+  --s3:    #eeecea;
+  --bdr:   rgba(0,0,0,0.08);
+  --div:   rgba(0,0,0,0.04);
+  --tx:    #201e1c;
+  --mu:    #6a6866;
+  --fa:    #bbb9b5;
+  --pr:    #017a82;
+  --pr-bg: rgba(1,122,130,0.10);
+  --gn:    #437a22;
+  --gn-bg: rgba(67,122,34,0.10);
+  --gd:    #b07a00;
+  --gd-bg: rgba(176,122,0,0.10);
+  --rd:    #c05050;
+  --rd-bg: rgba(192,80,80,0.10);
+}
+/* ── RESET ──────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;height:100%}
+body{font-family:'Satoshi',system-ui,sans-serif;font-size:15px;line-height:1.5;background:var(--bg);color:var(--tx);height:100%;overflow:hidden}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+input,select,textarea{font:inherit;color:inherit}
+svg{display:block}
+/* ── SHELL ──────────────────────────────────────── */
+#app{display:flex;flex-direction:column;height:100dvh;max-width:480px;margin:0 auto;position:relative;overflow:hidden}
+#hdr{padding:14px 18px 0;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:700;letter-spacing:.5px;color:var(--pr)}
+.logo svg{width:19px;height:19px}
+.ico-btn{width:32px;height:32px;border-radius:8px;background:var(--s2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;color:var(--mu);transition:color .15s}
+.ico-btn:active{transform:scale(.92)}
+/* ── VIEWS ──────────────────────────────────────── */
+#views{flex:1;overflow:hidden;position:relative}
+.view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:10px 18px calc(var(--nav-h) + 16px);opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s ease,transform .2s ease;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.view::-webkit-scrollbar{display:none}
+.view.active{opacity:1;pointer-events:all;transform:none}
+/* ── NAV ─────────────────────────────────────────── */
+#nav{position:absolute;bottom:0;left:0;right:0;height:var(--nav-h);background:var(--s1);border-top:1px solid var(--bdr);display:flex;align-items:flex-start;padding-top:8px;padding-bottom:env(safe-area-inset-bottom)}
+.nav-tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;border-radius:10px;color:var(--fa);cursor:pointer;transition:color .15s}
+.nav-tab.on{color:var(--pr)}
+.nav-tab span{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+/* ── SHARED ─────────────────────────────────────── */
+.sh{display:flex;align-items:center;justify-content:space-between;margin:16px 0 8px}
+.sh h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--mu)}
+.sh-add{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:var(--pr);cursor:pointer;padding:4px 0}
+.add-row{width:100%;padding:13px;background:none;border:1.5px dashed var(--bdr);border-radius:var(--r);color:var(--mu);font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .15s,color .15s;margin-bottom:10px}
+.add-row:hover{border-color:var(--pr);color:var(--pr)}
+.status-btns{display:flex;gap:6px}
+.s-btn{flex:1;padding:8px 0;border-radius:8px;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:5px;border:1.5px solid var(--bdr);color:var(--mu);transition:all .15s}
+.s-btn:active{transform:scale(.95)}
+.s-btn.done,.s-btn.floor{background:var(--gn-bg);border-color:var(--gn);color:var(--gn)}
+.s-btn.snooze{background:var(--gd-bg);border-color:var(--gd);color:var(--gd)}
+.cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cat-exercise{background:var(--rd)}
+.cat-project{background:var(--pr)}
+.cat-reading{background:#a86fdf}
+.cat-family{background:var(--gn)}
+.cat-custom{background:var(--gd)}
+.phase-pill{font-size:10px;font-weight:600;letter-spacing:.3px;padding:2px 7px;border-radius:20px}
+.phase-Active{background:var(--gn-bg);color:var(--gn)}
+.phase-Queue{background:var(--s3);color:var(--mu)}
+.phase-Paused{background:var(--gd-bg);color:var(--gd)}
+.miss-alert{display:flex;gap:8px;align-items:flex-start;padding:10px 12px;margin-bottom:8px;background:var(--rd-bg);border:1px solid rgba(223,112,112,.2);border-radius:var(--rm);font-size:12px;color:var(--rd);line-height:1.5}
+.miss-alert strong{font-weight:700}
+.snooze-tag{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--gd);background:var(--gd-bg);padding:4px 9px;border-radius:20px;margin-top:7px}
+.empty{text-align:center;padding:36px 0 16px;color:var(--mu)}
+.empty p{font-size:13px;line-height:1.6;max-width:26ch;margin:0 auto}
+/* ── TODAY ──────────────────────────────────────── */
+.today-date{margin:8px 0 14px}
+.today-date .day{font-size:24px;font-weight:700;letter-spacing:-.5px;line-height:1.2}
+.today-date .meta{font-size:12px;color:var(--mu);margin-top:2px}
+.h-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:13px 14px;margin-bottom:8px}
+.h-card.queue{opacity:.55}
+.h-card-hdr{display:flex;align-items:center;gap:9px;margin-bottom:11px}
+.h-card-info{flex:1;min-width:0}
+.h-name{font-size:14px;font-weight:600;letter-spacing:-.1px}
+.h-anchor-line{font-size:11px;color:var(--mu);margin-top:2px;display:flex;align-items:center;gap:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.h-card-actions{display:flex;align-items:center;gap:6px}
+.streak-pill{display:flex;align-items:center;gap:3px;font-size:12px;font-weight:600;color:var(--gd)}
+.menu-btn{color:var(--fa);width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:6px}
+.menu-btn:active{background:var(--s3)}
+.floor-chip{display:flex;align-items:flex-start;gap:6px;font-size:11px;color:var(--gn);background:var(--gn-bg);border-radius:7px;padding:7px 10px;margin-bottom:10px;line-height:1.45}
+.p-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:13px 14px;margin-bottom:8px;position:relative}
+.p-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--pr);display:flex;align-items:center;gap:4px;margin-bottom:7px}
+.p-title{font-size:15px;font-weight:600;letter-spacing:-.2px;margin-bottom:4px;line-height:1.35}
+.p-title.done,.p-title.floor{text-decoration:line-through;color:var(--mu)}
+.p-date-line{font-size:11px;color:var(--mu);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.p-edit-btn{position:absolute;top:12px;right:12px;color:var(--fa)}
+/* ── WEEK ────────────────────────────────────────── */
+.week-hdr{display:flex;align-items:center;margin:8px 0 14px;gap:8px}
+.week-label{flex:1;font-size:20px;font-weight:700;letter-spacing:-.3px}
+.grid-wrap{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden}
+.grid-head{display:grid;grid-template-columns:70px repeat(7,1fr);border-bottom:1px solid var(--bdr)}
+.grid-head-lbl{padding:9px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--mu)}
+.grid-day-hdr{padding:9px 0;text-align:center;font-size:10px;font-weight:700;color:var(--mu);line-height:1.5}
+.grid-day-hdr.today-col{color:var(--pr)}
+.grid-row{display:grid;grid-template-columns:70px repeat(7,1fr);border-top:1px solid var(--div)}
+.grid-habit{padding:11px 10px;display:flex;align-items:center;gap:5px;min-width:0}
+.grid-habit-name{font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.grid-cell{display:flex;align-items:center;justify-content:center;padding:11px 0}
+.pip{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.pip.done{background:var(--gn-bg);color:var(--gn)}
+.pip.floor{background:var(--gn-bg);color:var(--gn);opacity:.72}
+.pip.snoozed{background:var(--gd-bg);color:var(--gd)}
+.pip.missed{background:var(--rd-bg);color:var(--rd)}
+.pip.empty{border:1.5px dashed var(--div)}
+.pip.future{opacity:.2;border:1.5px dashed var(--div)}
+.week-legend{display:flex;flex-wrap:wrap;gap:12px;padding:11px 14px;border-top:1px solid var(--div)}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mu)}
+.legend-pip{width:12px;height:12px;border-radius:50%}
+.legend-pip.done{background:var(--gn-bg);border:1.5px solid var(--gn)}
+.legend-pip.floor{background:var(--gn-bg);border:1.5px solid var(--gn);opacity:.72}
+.legend-pip.snoozed{background:var(--gd-bg);border:1.5px solid var(--gd)}
+.legend-pip.missed{background:var(--rd-bg);border:1.5px solid var(--rd)}
+/* ── HABITS LIST ────────────────────────────────── */
+.habit-item{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:13px 14px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:background .12s}
+.habit-item:hover{background:var(--s2)}
+.habit-item-body{flex:1;min-width:0}
+.habit-item-name{font-size:14px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:3px;flex-wrap:wrap}
+.habit-item-meta{font-size:11px;color:var(--mu)}
+/* ── TASKS LIST ─────────────────────────────────── */
+.vtabs{display:flex;gap:4px;background:var(--s2);border-radius:10px;padding:3px;margin-bottom:12px}
+.vtab{flex:1;padding:7px 0;text-align:center;border-radius:8px;font-size:12px;font-weight:600;color:var(--mu);cursor:pointer;transition:all .15s}
+.vtab.on{background:var(--s1);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.task-card{background:var(--s1);border:1px solid var(--bdr);border-radius:var(--r);padding:13px 14px;margin-bottom:8px}
+.task-hdr{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.task-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--bdr);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800}
+.task-dot.done,.task-dot.floor{background:var(--gn-bg);border-color:var(--gn);color:var(--gn)}
+.task-dot.snoozed{background:var(--gd-bg);border-color:var(--gd);color:var(--gd)}
+.task-body{flex:1;min-width:0}
+.task-title-txt{font-size:14px;font-weight:600;margin-bottom:2px}
+.task-title-txt.done,.task-title-txt.floor{text-decoration:line-through;color:var(--mu)}
+.task-meta{font-size:11px;color:var(--mu);display:flex;align-items:center;gap:4px}
+.task-edit{color:var(--fa);width:26px;height:26px;display:flex;align-items:center;justify-content:center}
+/* ── MODALS ─────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);display:flex;align-items:flex-end;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal-sheet{background:var(--s1);border-radius:var(--r) var(--r) 0 0;padding:20px 20px 36px;width:100%;max-height:90dvh;overflow-y:auto;scrollbar-width:none;transform:translateY(24px);transition:transform .28s cubic-bezier(.16,1,.3,1)}
+.modal-bg.open .modal-sheet{transform:none}
+.modal-sheet::-webkit-scrollbar{display:none}
+.modal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.modal-title{font-size:17px;font-weight:700;letter-spacing:-.3px}
+.modal-close{width:30px;height:30px;border-radius:8px;background:var(--s2);display:flex;align-items:center;justify-content:center;color:var(--mu)}
+.info-box{display:flex;gap:8px;padding:10px 12px;border-radius:var(--rm);background:var(--gn-bg);font-size:12px;color:var(--gn);line-height:1.55;margin-bottom:14px}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--mu);margin-bottom:6px}
+.field-ctrl{width:100%;padding:10px 12px;background:var(--s2);border:1.5px solid var(--bdr);border-radius:var(--rm);font-size:14px;color:var(--tx);outline:none;transition:border-color .15s}
+.field-ctrl:focus{border-color:var(--pr)}
+.field-ctrl::placeholder{color:var(--fa)}
+select.field-ctrl{cursor:pointer;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237a7876' stroke-width='2.5' stroke-linecap='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.days-row{display:flex;flex-wrap:wrap;gap:5px}
+.day-chip{padding:6px 11px;border-radius:7px;font-size:12px;font-weight:600;border:1.5px solid var(--bdr);color:var(--mu);cursor:pointer;transition:all .15s;background:none}
+.day-chip:active{transform:scale(.92)}
+.day-chip.on{background:var(--pr-bg);border-color:var(--pr);color:var(--pr)}
+.modal-footer{display:flex;gap:8px;margin-top:16px}
+.btn-primary{flex:1;padding:12px;background:var(--pr);color:#fff;border-radius:var(--rm);font-size:14px;font-weight:600;transition:opacity .15s}
+.btn-primary:active{opacity:.82;transform:scale(.98)}
+.btn-ghost{padding:12px 16px;background:var(--s3);color:var(--mu);border-radius:var(--rm);font-size:14px;font-weight:600}
+.btn-danger{padding:12px 16px;background:var(--rd-bg);color:var(--rd);border-radius:var(--rm);font-size:14px;font-weight:600}
+.snooze-grid{display:flex;flex-direction:column;gap:7px}
+.snooze-opt{padding:12px 14px;border-radius:var(--rm);border:1.5px solid var(--bdr);font-size:14px;font-weight:500;text-align:left;transition:all .15s;color:var(--tx);background:var(--s2)}
+.snooze-opt:hover,.snooze-opt.on{background:var(--gd-bg);border-color:var(--gd);color:var(--gd)}
+.opt-sub{font-size:11px;color:var(--mu);margin-top:1px}
+.snooze-opt.on .opt-sub{color:var(--gd);opacity:.7}
+.ctx-menu{position:fixed;z-index:200;background:var(--s2);border:1px solid var(--bdr);border-radius:var(--rm);box-shadow:0 8px 32px rgba(0,0,0,.45);min-width:160px;overflow:hidden;opacity:0;pointer-events:none;transform:scale(.94);transform-origin:top right;transition:opacity .12s,transform .12s}
+.ctx-menu.open{opacity:1;pointer-events:all;transform:scale(1)}
+.ctx-item{display:flex;align-items:center;gap:9px;padding:11px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:background .1s}
+.ctx-item:hover{background:var(--s3)}
+.ctx-item.danger{color:var(--rd)}
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="hdr">
+    <div class="logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="5" r="2"/>
+        <line x1="12" y1="7" x2="12" y2="22"/>
+        <path d="M5 15s1.5 4.5 7 4.5 7-4.5 7-4.5"/>
+        <line x1="5" y1="10" x2="19" y2="10"/>
+      </svg>
+      ANCHOR
+    </div>
+    <button class="ico-btn" id="theme-btn" aria-label="Toggle theme">
+      <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    </button>
+  </header>
+
+  <div id="views">
+    <!-- TODAY -->
+    <div class="view active" id="v-today">
+      <div class="today-date"><div class="day" id="today-heading"></div><div class="meta" id="today-sub"></div></div>
+      <div class="sh"><h2>Priority</h2><div class="sh-add" id="btn-add-task-today">+ Add</div></div>
+      <div id="today-tasks-list"></div>
+      <div class="sh"><h2>Habits</h2><div class="sh-add" id="btn-add-habit-today">+ Add</div></div>
+      <div id="miss-alerts-wrap"></div>
+      <div id="today-habits-list"></div>
+    </div>
+    <!-- WEEK -->
+    <div class="view" id="v-week">
+      <div class="week-hdr">
+        <div class="week-label" id="week-label"></div>
+        <button class="ico-btn" id="wk-prev"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <button class="ico-btn" id="wk-next"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="grid-wrap">
+        <div id="week-grid"></div>
+        <div class="week-legend">
+          <div class="legend-item"><div class="legend-pip done"></div>Done</div>
+          <div class="legend-item"><div class="legend-pip floor"></div>Floor</div>
+          <div class="legend-item"><div class="legend-pip snoozed"></div>Snoozed</div>
+          <div class="legend-item"><div class="legend-pip missed"></div>Missed</div>
+        </div>
+      </div>
+    </div>
+    <!-- HABITS -->
+    <div class="view" id="v-habits">
+      <div class="sh" style="margin-top:6px"><h2>All Habits</h2></div>
+      <button class="add-row" id="btn-add-habit-main">+ New Habit</button>
+      <div id="habits-list"></div>
+    </div>
+    <!-- TASKS -->
+    <div class="view" id="v-tasks">
+      <div class="vtabs" id="task-filter-tabs">
+        <div class="vtab on" data-f="upcoming">Upcoming</div>
+        <div class="vtab" data-f="today">Today</div>
+        <div class="vtab" data-f="done">Done</div>
+      </div>
+      <button class="add-row" id="btn-add-task-main">+ New Priority Task</button>
+      <div id="tasks-list"></div>
+    </div>
+  </div>
+
+  <nav id="nav">
+    <div class="nav-tab on" data-view="today">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      <span>Today</span>
+    </div>
+    <div class="nav-tab" data-view="week">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Week</span>
+    </div>
+    <div class="nav-tab" data-view="habits">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span>Habits</span>
+    </div>
+    <div class="nav-tab" data-view="tasks">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      <span>Tasks</span>
+    </div>
+  </nav>
+</div>
+
+<!-- HABIT MODAL -->
+<div class="modal-bg" id="habit-modal">
+  <div class="modal-sheet">
+    <div class="modal-hdr">
+      <div class="modal-title" id="habit-modal-title">New Habit</div>
+      <button class="modal-close" data-close="habit-modal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="info-box"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Floor = Done. Both are green. The floor IS the habit on hard days.</div>
+    <div class="field"><label>Habit name</label><input class="field-ctrl" id="h-name" placeholder="e.g. Project Touch" maxlength="60"></div>
+    <div class="field"><label>Category</label>
+      <select class="field-ctrl" id="h-cat">
+        <option value="exercise">🔴 Exercise / Movement</option>
+        <option value="project" selected>🔵 Project Work</option>
+        <option value="reading">🟣 Reading</option>
+        <option value="family">🟢 Family</option>
+        <option value="custom">🟠 Custom</option>
+      </select>
+    </div>
+    <div class="field"><label>Anchor — fires after…</label><input class="field-ctrl" id="h-anchor" placeholder="e.g. After changing from gym clothes"></div>
+    <div class="field"><label>Floor version (2-min)</label><input class="field-ctrl" id="h-floor" placeholder="e.g. Open file, write one line"></div>
+    <div class="field"><label>Full version</label><input class="field-ctrl" id="h-full" placeholder="e.g. 45–60 min focused session"></div>
+    <div class="field">
+      <label>Active days</label>
+      <div class="days-row">
+        <button class="day-chip on" id="h-every-day">Every day</button>
+        <button class="day-chip" data-d="mon">Mon</button>
+        <button class="day-chip" data-d="tue">Tue</button>
+        <button class="day-chip" data-d="wed">Wed</button>
+        <button class="day-chip" data-d="thu">Thu</button>
+        <button class="day-chip" data-d="fri">Fri</button>
+        <button class="day-chip" data-d="sat">Sat</button>
+        <button class="day-chip" data-d="sun">Sun</button>
+      </div>
+    </div>
+    <div class="field"><label>Phase</label>
+      <select class="field-ctrl" id="h-phase">
+        <option value="Active">Active — running now</option>
+        <option value="Queue">Queue — not started yet</option>
+        <option value="Paused">Paused</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="h-delete" style="display:none">Delete</button>
+      <button class="btn-ghost" data-close="habit-modal">Cancel</button>
+      <button class="btn-primary" id="h-save">Save Habit</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASK MODAL -->
+<div class="modal-bg" id="task-modal">
+  <div class="modal-sheet">
+    <div class="modal-hdr">
+      <div class="modal-title" id="task-modal-title">New Priority Task</div>
+      <button class="modal-close" data-close="task-modal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="field"><label>Task</label><input class="field-ctrl" id="t-title" placeholder="e.g. Fix kitchen tap" maxlength="80"></div>
+    <div class="field"><label>Target date</label><input class="field-ctrl" id="t-date" type="date"></div>
+    <div class="field"><label>Notes (optional)</label><input class="field-ctrl" id="t-notes" placeholder="Any extra context…"></div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="t-delete" style="display:none">Delete</button>
+      <button class="btn-ghost" data-close="task-modal">Cancel</button>
+      <button class="btn-primary" id="t-save">Save Task</button>
+    </div>
+  </div>
+</div>
+
+<!-- SNOOZE MODAL -->
+<div class="modal-bg" id="snooze-modal">
+  <div class="modal-sheet">
+    <div class="modal-hdr">
+      <div class="modal-title">Snooze until…</div>
+      <button class="modal-close" data-close="snooze-modal"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="snooze-grid" id="snooze-options"></div>
+    <div class="modal-footer"><button class="btn-ghost" data-close="snooze-modal">Cancel</button></div>
+  </div>
+</div>
+
+<!-- CONTEXT MENU -->
+<div class="ctx-menu" id="ctx-menu">
+  <div class="ctx-item" id="ctx-edit">✏️ Edit</div>
+  <div class="ctx-item" id="ctx-toggle-phase">⏸ Pause</div>
+  <div class="ctx-item danger" id="ctx-delete">🗑 Delete</div>
+</div>
+
+<script>
+'use strict';
+const uid=()=>Math.random().toString(36).slice(2,10);
+const today=()=>new Date().toISOString().slice(0,10);
+function fmtDate(iso){if(!iso)return '';const d=new Date(iso+'T00:00:00');return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});}
+function addDays(iso,n){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function weekStart(iso){const d=new Date(iso+'T00:00:00');const day=d.getDay();const mon=day===0?-6:1-day;d.setDate(d.getDate()+mon);return d.toISOString().slice(0,10);}
+function dayName(iso){return new Date(iso+'T00:00:00').toLocaleDateString('en-GB',{weekday:'short'}).slice(0,2);}
+function dayNum(iso){return new Date(iso+'T00:00:00').getDate();}
+function getDayCode(iso){return ['sun','mon','tue','wed','thu','fri','sat'][new Date(iso+'T00:00:00').getDay()];}
+function weekNum(d){const dt=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const day=dt.getUTCDay()||7;dt.setUTCDate(dt.getUTCDate()+4-day);const ys=new Date(Date.UTC(dt.getUTCFullYear(),0,1));return Math.ceil((((dt-ys)/86400000)+1)/7);}
+
+let habits=[],tasks=[],logs={},taskLogs={};
+function save(){localStorage.setItem('anc_h',JSON.stringify(habits));localStorage.setItem('anc_t',JSON.stringify(tasks));localStorage.setItem('anc_l',JSON.stringify(logs));localStorage.setItem('anc_tl',JSON.stringify(taskLogs));}
+function load(){habits=JSON.parse(localStorage.getItem('anc_h')||'[]');tasks=JSON.parse(localStorage.getItem('anc_t')||'[]');logs=JSON.parse(localStorage.getItem('anc_l')||'{}');taskLogs=JSON.parse(localStorage.getItem('anc_tl')||'{}');if(!habits.length)seed();}
+function seed(){
+  const now=today();
+  habits=[
+    {id:'h1',name:'Project Touch',category:'project',phase:'Active',anchor:'After changing from gym clothes',floorVersion:'Open the file, make one decision',fullVersion:'45–60 min focused work session',days:['every'],createdAt:addDays(now,-14)},
+    {id:'h2',name:'Evening Read',category:'reading',phase:'Queue',anchor:'After evening shower',floorVersion:'Read one page, phone in other room',fullVersion:'25–30 min physical book',days:['every'],createdAt:addDays(now,-7)},
+    {id:'h3',name:'Family Presence',category:'family',phase:'Queue',anchor:'When pulling out chair at dinner',floorVersion:'Phone face-down before sitting',fullVersion:'Full meal + post-dinner phone-free',days:['every'],createdAt:addDays(now,-3)}
+  ];
+  const st=['done','done','floor','done','snoozed','done','done','done','floor','done','done','done','done'];
+  st.forEach((s,i)=>{const d=addDays(now,-(st.length-1-i));if(d<=now)logs['h1_'+d]=s;});
+  tasks=[{id:'t1',title:'Plan home project phase 2',targetDate:now,notes:'Review last session notes first',createdAt:now,status:'pending'}];
+  save();
+}
+
+function getLog(hid,date){return logs[hid+'_'+date]||null;}
+function setLog(hid,date,status){if(status===null)delete logs[hid+'_'+date];else logs[hid+'_'+date]=status;save();}
+function getTaskSt(tid,date){return taskLogs[tid+'_'+date]||null;}
+function setTaskSt(tid,date,status){if(status===null)delete taskLogs[tid+'_'+date];else taskLogs[tid+'_'+date]=status;save();}
+function isActiveDay(h,date){return h.days.includes('every')||h.days.includes(getDayCode(date));}
+function getStreak(hid){
+  let streak=0,d=today();
+  if(!getLog(hid,d))d=addDays(d,-1);
+  const h=habits.find(x=>x.id===hid);if(!h)return 0;
+  for(let i=0;i<90;i++){if(!isActiveDay(h,d)){d=addDays(d,-1);continue;}const s=getLog(hid,d);if(s==='done'||s==='floor'){streak++;d=addDays(d,-1);}else break;}
+  return streak;
+}
+function getConsecMisses(hid){
+  let n=0,d=addDays(today(),-1);
+  const h=habits.find(x=>x.id===hid);if(!h)return 0;
+  for(let i=0;i<14;i++){if(!isActiveDay(h,d)){d=addDays(d,-1);continue;}const s=getLog(hid,d);if(s==='missed'||(!s&&d<today())){n++;d=addDays(d,-1);}else break;}
+  return n;
+}
+
+let currentView='today',weekOffset=0,taskFilter='upcoming',snoozeTarget=null,ctxTarget=null,editingHabitId=null,editingTaskId=null;
+
+document.querySelectorAll('.nav-tab').forEach(tab=>tab.addEventListener('click',()=>switchView(tab.dataset.view)));
+function switchView(v){
+  currentView=v;
+  document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('on'));
+  document.getElementById('v-'+v)?.classList.add('active');
+  document.querySelector(`.nav-tab[data-view="${v}"]`)?.classList.add('on');
+  renderView(v);
+}
+function renderView(v){if(v==='today')renderToday();else if(v==='week')renderWeek();else if(v==='habits')renderHabits();else if(v==='tasks')renderTasks();}
+
+const DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function renderToday(){
+  const t=today(),d=new Date(t+'T00:00:00');
+  document.getElementById('today-heading').textContent=DAYS[d.getDay()]+', '+d.getDate()+' '+MONTHS[d.getMonth()];
+  document.getElementById('today-sub').textContent='Week '+weekNum(d)+' · '+d.getFullYear();
+  const todayTasks=tasks.filter(x=>x.targetDate&&x.targetDate<=t);
+  const tw=document.getElementById('today-tasks-list');
+  tw.innerHTML=todayTasks.length?todayTasks.map(x=>buildTaskCard(x,t)).join(''):'<div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;opacity:.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><p>No priority task.<br>Tap + Add to set one.</p></div>';
+  const aw=document.getElementById('miss-alerts-wrap');
+  const alerts=habits.filter(h=>h.phase==='Active'&&getConsecMisses(h.id)>=2);
+  aw.innerHTML=alerts.map(h=>{const n=getConsecMisses(h.id);return`<div class="miss-alert"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><div><strong>${h.name}</strong> — ${n} day${n>1?'s':''} missed. Floor version counts. <span style="text-decoration:underline;cursor:pointer" onclick="document.getElementById('hcard-${h.id}')?.scrollIntoView({behavior:'smooth',block:'center'})">Log now ↓</span></div></div>`;}).join('');
+  const hw=document.getElementById('today-habits-list');
+  const hs=habits.filter(h=>(h.phase==='Active'||h.phase==='Queue')&&isActiveDay(h,t));
+  hw.innerHTML=hs.length?hs.map(h=>buildHabitCard(h,t)).join(''):'<div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto 8px;opacity:.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>No habits yet.<br>Add your first anchor habit above.</p></div>';
+  bindActions();
+}
+
+function buildHabitCard(h,date){
+  const st=getLog(h.id,date),streak=getStreak(h.id),isQ=h.phase==='Queue';
+  const doneOn=st==='done',floorOn=st==='floor',snzOn=st==='snoozed';
+  const snzDate=snzOn?(logs['__snz_'+h.id+'_'+date]||''):'';
+  const btns=isQ
+    ?`<div style="font-size:11px;color:var(--mu);background:var(--s3);border-radius:6px;padding:5px 10px">Queued — activate in Habits tab to start logging</div>`
+    :`${h.floorVersion?`<div class="floor-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>${h.floorVersion}</div>`:''}
+<div class="status-btns">
+<button class="s-btn ${doneOn?'done':''}" data-action="log" data-hid="${h.id}" data-date="${date}" data-st="done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>${doneOn?'Done ✓':'Done'}</button>
+<button class="s-btn ${floorOn?'floor':''}" data-action="log" data-hid="${h.id}" data-date="${date}" data-st="floor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>${floorOn?'Floor ✓':'Floor'}</button>
+<button class="s-btn ${snzOn?'snooze':''}" data-action="snooze-habit" data-hid="${h.id}" data-date="${date}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Snooze</button>
+</div>
+${snzOn&&snzDate?`<div class="snooze-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Snoozed to ${fmtDate(snzDate)}</div>`:''}`;  
+  return`<div class="h-card${isQ?' queue':''}" id="hcard-${h.id}">
+<div class="h-card-hdr">
+<div class="cat-dot cat-${h.category}"></div>
+<div class="h-card-info"><div class="h-name">${h.name}</div>${h.anchor?`<div class="h-anchor-line"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="flex-shrink:0;opacity:.45"><circle cx="12" cy="5" r="2"/><line x1="12" y1="7" x2="12" y2="22"/><path d="M5 15s1.5 4 7 4 7-4 7-4"/><line x1="5" y1="10" x2="19" y2="10"/></svg>${h.anchor}</div>`:''}</div>
+<div class="h-card-actions">${streak>0?`<div class="streak-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>${streak}</div>`:''}
+<button class="menu-btn" data-action="ctx-habit" data-hid="${h.id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>
+</div>
+</div>
+${btns}
+</div>`;
+}
+
+function buildTaskCard(task,date){
+  const st=getTaskSt(task.id,date),doneOn=st==='done',floorOn=st==='floor',snzOn=st==='snoozed';
+  return`<div class="p-card">
+<div class="p-label"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>Priority</div>
+<div class="p-title${doneOn||floorOn?' done':''}">${task.title}</div>
+${task.targetDate?`<div class="p-date-line"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${fmtDate(task.targetDate)}</div>`:''}
+<div class="status-btns">
+<button class="s-btn ${doneOn?'done':''}" data-action="task-log" data-tid="${task.id}" data-date="${date}" data-st="done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>${doneOn?'Done ✓':'Done'}</button>
+<button class="s-btn ${floorOn?'floor':''}" data-action="task-log" data-tid="${task.id}" data-date="${date}" data-st="floor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>${floorOn?'Floor ✓':'Floor'}</button>
+<button class="s-btn ${snzOn?'snooze':''}" data-action="snooze-task" data-tid="${task.id}" data-date="${date}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Snooze</button>
+</div>
+<button class="p-edit-btn" data-action="edit-task" data-tid="${task.id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+</div>`;
+}
+
+function bindActions(){
+  document.querySelectorAll('[data-action]').forEach(el=>{
+    el.onclick=null;
+    el.addEventListener('click',handleAction);
+  });
+}
+
+function handleAction(e){
+  const el=e.currentTarget,action=el.dataset.action;
+  if(action==='log'){const hid=el.dataset.hid,date=el.dataset.date,st=el.dataset.st;const cur=getLog(hid,date);setLog(hid,date,cur===st?null:st);renderToday();}
+  else if(action==='snooze-habit'){openSnoozeModal({type:'habit',id:el.dataset.hid,date:el.dataset.date});}
+  else if(action==='task-log'){const tid=el.dataset.tid,date=el.dataset.date,st=el.dataset.st;const cur=getTaskSt(tid,date);setTaskSt(tid,date,cur===st?null:st);renderToday();}
+  else if(action==='snooze-task'){openSnoozeModal({type:'task',id:el.dataset.tid,date:el.dataset.date});}
+  else if(action==='edit-task'){openTaskModal(el.dataset.tid);}
+  else if(action==='ctx-habit'){showCtxMenu(el,{type:'habit',id:el.dataset.hid});}
+  else if(action==='tl-log'){const tid=el.dataset.tid,date=el.dataset.date,st=el.dataset.st;const cur=getTaskSt(tid,date);setTaskSt(tid,date,cur===st?null:st);renderTasks();}
+  else if(action==='tl-snooze'){openSnoozeModal({type:'task',id:el.dataset.tid,date:el.dataset.date});}
+  else if(action==='tl-edit'){openTaskModal(el.dataset.tid);}
+}
+
+function renderWeek(){
+  const ws=weekStart(addDays(today(),weekOffset*7));
+  const days=Array.from({length:7},(_,i)=>addDays(ws,i));
+  const t=today();
+  const s=new Date(days[0]+'T00:00:00'),e=new Date(days[6]+'T00:00:00');
+  const mo=s.toLocaleDateString('en-GB',{month:'short'}),mo2=e.toLocaleDateString('en-GB',{month:'short'});
+  document.getElementById('week-label').textContent=mo===mo2?`${mo} ${s.getFullYear()}`:`${mo}–${mo2} ${e.getFullYear()}`;
+  const active=habits.filter(h=>h.phase==='Active');
+  let html='';
+  html+='<div class="grid-head"><div class="grid-head-lbl">Habit</div>';
+  days.forEach(d=>{const isTdy=d===t;html+=`<div class="grid-day-hdr${isTdy?' today-col':''}">  ${dayName(d)}<br>${dayNum(d)}</div>`;});
+  html+='</div>';
+  if(!active.length)html+='<div style="padding:24px 16px;text-align:center;color:var(--mu);font-size:13px">No active habits yet.<br>Set a habit to Active to track it here.</div>';
+  else active.forEach(h=>{
+    html+=`<div class="grid-row"><div class="grid-habit"><div class="cat-dot cat-${h.category}"></div><div class="grid-habit-name">${h.name}</div></div>`;
+    days.forEach(d=>{
+      if(!isActiveDay(h,d)){html+='<div class="grid-cell"></div>';return;}
+      if(d>t){html+='<div class="grid-cell"><div class="pip future">·</div></div>';return;}
+      const s=getLog(h.id,d);
+      if(s==='done')html+='<div class="grid-cell"><div class="pip done" title="Done">✓</div></div>';
+      else if(s==='floor')html+='<div class="grid-cell"><div class="pip floor" title="Floor">/</div></div>';
+      else if(s==='snoozed')html+='<div class="grid-cell"><div class="pip snoozed" title="Snoozed">z</div></div>';
+      else if(s==='missed')html+='<div class="grid-cell"><div class="pip missed" title="Missed">✕</div></div>';
+      else html+='<div class="grid-cell"><div class="pip empty"></div></div>';
+    });
+    html+='</div>';
+  });
+  document.getElementById('week-grid').innerHTML=html;
+}
+document.getElementById('wk-prev').addEventListener('click',()=>{weekOffset--;renderWeek();});
+document.getElementById('wk-next').addEventListener('click',()=>{if(weekOffset<0){weekOffset++;renderWeek();}});
+
+function renderHabits(){
+  const wrap=document.getElementById('habits-list');
+  if(!habits.length){wrap.innerHTML='<div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 8px;opacity:.2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>No habits yet. Tap New Habit to start.</p></div>';return;}
+  const order=['Active','Queue','Paused'];
+  const sorted=[...habits].sort((a,b)=>order.indexOf(a.phase)-order.indexOf(b.phase));
+  wrap.innerHTML=sorted.map(h=>{
+    const streak=getStreak(h.id);
+    return`<div class="habit-item" data-hid="${h.id}">
+<div class="cat-dot cat-${h.category}"></div>
+<div class="habit-item-body">
+<div class="habit-item-name">${h.name}<span class="phase-pill phase-${h.phase}">${h.phase}</span></div>
+<div class="habit-item-meta">${h.anchor||'No anchor set'}${streak>0?` · 🔥 ${streak}-day streak`:''}</div>
+</div>
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="color:var(--fa);flex-shrink:0"><polyline points="9 18 15 12 9 6"/></svg>
+</div>`;
+  }).join('');
+  wrap.querySelectorAll('.habit-item').forEach(el=>el.addEventListener('click',()=>openHabitModal(el.dataset.hid)));
+}
+
+function renderTasks(){
+  const t=today(),wrap=document.getElementById('tasks-list');
+  let filtered;
+  if(taskFilter==='upcoming')filtered=tasks.filter(x=>(!x.targetDate||x.targetDate>=t)&&getTaskSt(x.id,t)!=='done'&&getTaskSt(x.id,t)!=='floor');
+  else if(taskFilter==='today')filtered=tasks.filter(x=>x.targetDate===t);
+  else filtered=tasks.filter(x=>{const s=getTaskSt(x.id,t);return s==='done'||s==='floor';});
+  filtered.sort((a,b)=>(a.targetDate||'9999')<(b.targetDate||'9999')?-1:1);
+  if(!filtered.length){wrap.innerHTML='<div class="empty"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" style="margin:0 auto 8px;opacity:.2"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg><p>Nothing here yet.</p></div>';return;}
+  wrap.innerHTML=filtered.map(task=>{
+    const st=getTaskSt(task.id,t),doneOn=st==='done',floorOn=st==='floor',snzOn=st==='snoozed';
+    return`<div class="task-card">
+<div class="task-hdr">
+<div class="task-dot${doneOn||floorOn?' done':snzOn?' snoozed':''}">${doneOn||floorOn?'✓':snzOn?'z':''}</div>
+<div class="task-body">
+<div class="task-title-txt${doneOn||floorOn?' done':''}">${task.title}</div>
+${task.targetDate?`<div class="task-meta"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${fmtDate(task.targetDate)}</div>`:''}
+${task.notes?`<div class="task-meta" style="margin-top:2px">${task.notes}</div>`:''}
+</div>
+<button class="task-edit" data-action="tl-edit" data-tid="${task.id}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+</div>
+<div class="status-btns">
+<button class="s-btn ${doneOn?'done':''}" data-action="tl-log" data-tid="${task.id}" data-date="${t}" data-st="done"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>${doneOn?'Done ✓':'Done'}</button>
+<button class="s-btn ${floorOn?'floor':''}" data-action="tl-log" data-tid="${task.id}" data-date="${t}" data-st="floor"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>${floorOn?'Floor ✓':'Floor'}</button>
+<button class="s-btn ${snzOn?'snooze':''}" data-action="tl-snooze" data-tid="${task.id}" data-date="${t}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Snooze</button>
+</div>
+</div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-action]').forEach(el=>el.addEventListener('click',handleAction));
+}
+document.getElementById('task-filter-tabs').addEventListener('click',e=>{const tab=e.target.closest('.vtab');if(!tab)return;taskFilter=tab.dataset.f;document.querySelectorAll('#task-filter-tabs .vtab').forEach(t=>t.classList.remove('on'));tab.classList.add('on');renderTasks();});
+
+function openHabitModal(hid=null){
+  editingHabitId=hid;
+  const h=hid?habits.find(x=>x.id===hid):null;
+  document.getElementById('habit-modal-title').textContent=hid?'Edit Habit':'New Habit';
+  document.getElementById('h-name').value=h?.name||'';
+  document.getElementById('h-cat').value=h?.category||'project';
+  document.getElementById('h-anchor').value=h?.anchor||'';
+  document.getElementById('h-floor').value=h?.floorVersion||'';
+  document.getElementById('h-full').value=h?.fullVersion||'';
+  document.getElementById('h-phase').value=h?.phase||'Active';
+  document.getElementById('h-delete').style.display=hid?'block':'none';
+  const days=h?.days||['every'];
+  document.getElementById('h-every-day').classList.toggle('on',days.includes('every'));
+  document.querySelectorAll('.day-chip[data-d]').forEach(b=>b.classList.toggle('on',!days.includes('every')&&days.includes(b.dataset.d)));
+  openModal('habit-modal');
+}
+document.getElementById('h-every-day').addEventListener('click',function(){this.classList.add('on');document.querySelectorAll('.day-chip[data-d]').forEach(b=>b.classList.remove('on'));});
+document.querySelectorAll('.day-chip[data-d]').forEach(btn=>btn.addEventListener('click',function(){document.getElementById('h-every-day').classList.remove('on');this.classList.toggle('on');}));
+document.getElementById('h-save').addEventListener('click',()=>{
+  const name=document.getElementById('h-name').value.trim();
+  if(!name){document.getElementById('h-name').focus();return;}
+  const every=document.getElementById('h-every-day').classList.contains('on');
+  const selDays=every?['every']:Array.from(document.querySelectorAll('.day-chip[data-d].on')).map(b=>b.dataset.d);
+  const data={name,category:document.getElementById('h-cat').value,anchor:document.getElementById('h-anchor').value.trim(),floorVersion:document.getElementById('h-floor').value.trim(),fullVersion:document.getElementById('h-full').value.trim(),days:selDays.length?selDays:['every'],phase:document.getElementById('h-phase').value};
+  if(editingHabitId){const idx=habits.findIndex(h=>h.id===editingHabitId);if(idx>=0)habits[idx]={...habits[idx],...data};}else habits.push({id:uid(),createdAt:today(),...data});
+  save();closeModal('habit-modal');renderView(currentView);
+});
+document.getElementById('h-delete').addEventListener('click',()=>{
+  if(!editingHabitId||!confirm('Delete this habit and all its logs?'))return;
+  habits=habits.filter(h=>h.id!==editingHabitId);
+  Object.keys(logs).forEach(k=>{if(k.startsWith(editingHabitId+'_'))delete logs[k];});
+  save();closeModal('habit-modal');renderView(currentView);
+});
+
+function openTaskModal(tid=null){
+  editingTaskId=tid;
+  const task=tid?tasks.find(x=>x.id===tid):null;
+  document.getElementById('task-modal-title').textContent=tid?'Edit Task':'New Priority Task';
+  document.getElementById('t-title').value=task?.title||'';
+  document.getElementById('t-date').value=task?.targetDate||today();
+  document.getElementById('t-notes').value=task?.notes||'';
+  document.getElementById('t-delete').style.display=tid?'block':'none';
+  openModal('task-modal');
+}
+document.getElementById('t-save').addEventListener('click',()=>{
+  const title=document.getElementById('t-title').value.trim();
+  if(!title){document.getElementById('t-title').focus();return;}
+  const data={title,targetDate:document.getElementById('t-date').value||today(),notes:document.getElementById('t-notes').value.trim(),status:'pending'};
+  if(editingTaskId){const idx=tasks.findIndex(t=>t.id===editingTaskId);if(idx>=0)tasks[idx]={...tasks[idx],...data};}else tasks.push({id:uid(),createdAt:today(),...data});
+  save();closeModal('task-modal');renderView(currentView);
+});
+document.getElementById('t-delete').addEventListener('click',()=>{
+  if(!editingTaskId||!confirm('Delete this task?'))return;
+  tasks=tasks.filter(t=>t.id!==editingTaskId);
+  Object.keys(taskLogs).forEach(k=>{if(k.startsWith(editingTaskId+'_'))delete taskLogs[k];});
+  save();closeModal('task-modal');renderView(currentView);
+});
+
+function openSnoozeModal(target){
+  snoozeTarget=target;
+  const base=target.date||today();
+  const opts=[{label:'Tomorrow',days:1},{label:'In 2 days',days:2},{label:'In 3 days',days:3},{label:'Next week',days:7}];
+  document.getElementById('snooze-options').innerHTML=opts.map(o=>`<button class="snooze-opt" data-days="${o.days}">${o.label}<div class="opt-sub">${fmtDate(addDays(base,o.days))}</div></button>`).join('');
+  document.querySelectorAll('#snooze-options .snooze-opt').forEach(btn=>btn.addEventListener('click',()=>{
+    const snoozeTo=addDays(snoozeTarget.date||today(),parseInt(btn.dataset.days));
+    if(snoozeTarget.type==='habit'){setLog(snoozeTarget.id,snoozeTarget.date,'snoozed');logs['__snz_'+snoozeTarget.id+'_'+snoozeTarget.date]=snoozeTo;save();}
+    else{setTaskSt(snoozeTarget.id,snoozeTarget.date,'snoozed');taskLogs['__snz_'+snoozeTarget.id+'_'+snoozeTarget.date]=snoozeTo;save();}
+    closeModal('snooze-modal');renderView(currentView);
+  }));
+  openModal('snooze-modal');
+}
+
+function showCtxMenu(anchor,target){
+  ctxTarget=target;
+  const ctx=document.getElementById('ctx-menu');
+  const rect=anchor.getBoundingClientRect();
+  ctx.style.top=(rect.bottom+6)+'px';
+  ctx.style.right=(window.innerWidth-rect.right)+'px';
+  const h=habits.find(x=>x.id===target.id);
+  document.getElementById('ctx-toggle-phase').textContent=h?.phase==='Paused'?'▶ Resume':'⏸ Pause';
+  ctx.classList.add('open');
+}
+document.addEventListener('click',e=>{const ctx=document.getElementById('ctx-menu');if(!ctx.contains(e.target)&&!e.target.closest('[data-action="ctx-habit"]'))ctx.classList.remove('open');});
+document.getElementById('ctx-edit').addEventListener('click',()=>{document.getElementById('ctx-menu').classList.remove('open');if(ctxTarget?.type==='habit')openHabitModal(ctxTarget.id);});
+document.getElementById('ctx-toggle-phase').addEventListener('click',()=>{
+  document.getElementById('ctx-menu').classList.remove('open');
+  if(ctxTarget?.type==='habit'){const h=habits.find(x=>x.id===ctxTarget.id);if(h)h.phase=h.phase==='Paused'?'Active':'Paused';save();renderView(currentView);}
+});
+document.getElementById('ctx-delete').addEventListener('click',()=>{
+  document.getElementById('ctx-menu').classList.remove('open');
+  if(ctxTarget?.type==='habit'){if(!confirm('Delete this habit?'))return;habits=habits.filter(h=>h.id!==ctxTarget.id);Object.keys(logs).forEach(k=>{if(k.startsWith(ctxTarget.id+'_'))delete logs[k];});save();renderView(currentView);}
+});
+
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeModal(btn.dataset.close)));
+document.querySelectorAll('.modal-bg').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)closeModal(bg.id);}));
+document.getElementById('btn-add-habit-today').addEventListener('click',()=>openHabitModal());
+document.getElementById('btn-add-habit-main').addEventListener('click',()=>openHabitModal());
+document.getElementById('btn-add-task-today').addEventListener('click',()=>openTaskModal());
+document.getElementById('btn-add-task-main').addEventListener('click',()=>openTaskModal());
+
+let theme=localStorage.getItem('anc_theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+function applyTheme(t){
+  theme=t;
+  document.documentElement.setAttribute('data-theme',t);
+  const icon=document.getElementById('theme-icon');
+  icon.innerHTML=t==='dark'
+    ?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
+    :'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+  localStorage.setItem('anc_theme',t);
+}
+document.getElementById('theme-btn').addEventListener('click',()=>applyTheme(theme==='dark'?'light':'dark'));
+
+load();
+applyTheme(theme);
+renderToday();
+</script>
+</body>
+</html>
